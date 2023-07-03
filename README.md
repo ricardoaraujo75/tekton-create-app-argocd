@@ -24,17 +24,23 @@ As informações dos parâmetros utilizados no comando estão no link https://ar
 
 No pipeline definimos a task criada e passamos os parâmetos que podem ser criados dinamicamente ou ficar em outros objetos como por exemplo um triggerTemplate.
 
-Pronto é só executar e testar, agora você pode automatizar suas aplicações do ArgoCD a partir de seu pipeline do Tekton.
+O pipeline foi executado no namespace pipeline-prj e foi dado permissão ao usuário do ArgoCD para criar a aplicação.
 
-Pipeline
+```
+oc policy add-role-to-user edit system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller -n pipeline-prj
+```
+
+Pipeline.
 |![Pipeline](img/pipeline.jpg)|
 |-|
 
 
-Application created in the ArgoCD.
+Aplicação criada no ArgoCD.
 |![App Created in ArgoCD](img/app-argo.jpg)|
 |-|
 
-Application Running in the ArgoCD.
+Aplicaçao em execução no ArgoCD.
 |![App Running in ArgoCD](img/app-argo-running.jpg)|
 |-|
+
+Pronto é só executar e testar, agora você pode automatizar suas aplicações do ArgoCD a partir de seu pipeline do Tekton.

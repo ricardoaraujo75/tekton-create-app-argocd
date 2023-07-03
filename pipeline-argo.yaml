@@ -1,39 +1,38 @@
 apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
+kind: Pipeline
 metadata:
-  annotations:
-    pipeline.openshift.io/started-by: admin
-  name: pipeline-argo-cfz0rq
+  name: pipeline-argo
   namespace: pipeline-prj
-  finalizers:
-    - chains.tekton.dev/pipelinerun
-  labels:
-    tekton.dev/pipeline: pipeline-argo
 spec:
-  params:
+  params: 
     - name: APP_NAME_ARGO
-      value: my-app-argo
+      type: string
+      default: my-app-argo
     - name: GIT_REPO_CONFIG
-      value: 'https://github.com/ricardoaraujo75/app-helloworld-config.git'
+      type: string
+      default: 'https://github.com/ricardoaraujo75/app-helloworld-config.git'
     - name: PROJECT_NAME
-      value: pipeline-prj
+      type: string
+      default: pipeline-prj
     - name: ENVIRONMENT
-      value: main
-  pipelineRef:
-    name: pipeline-argo
-  serviceAccountName: pipeline
-  timeout: 1h0m0s
+      type: string
+      default: main
+  tasks:
+    - name: create-app-argocd
+      params:
+      - name: APP_NAME_ARGO
+        value: $(params.APP_NAME_ARGO)
+      - name: GIT_REPO_CONFIG
+        value: $(params.GIT_REPO_CONFIG)        
+      - name: PROJECT_NAME
+        value: $(params.PROJECT_NAME)
+      - name: ENVIRONMENT
+        value: $(params.ENVIRONMENT)        
+      taskRef:
+        kind: Task
+        name: create-app-argocd
+      workspaces:
+      - name: workspace
+        workspace: workspace        
   workspaces:
     - name: workspace
-      volumeClaimTemplate:
-        metadata:
-          creationTimestamp: null
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi
-          storageClassName: gp3-csi
-          volumeMode: Filesystem
-        status: {}
