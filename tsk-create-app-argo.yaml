@@ -1,0 +1,42 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: create-app-argocd
+  namespace: pipeline-prj
+spec:
+  params:
+    - default: >-
+        openshift-gitops-server-openshift-gitops.apps.cluster-d9mf9.d9mf9.sandbox1190.opentlc.com:443
+      name: ARGO_URL
+      type: string
+    - default: admin
+      name: USERNAME
+      type: string
+    - default: XU8h6pb1xHQzy7nwSGW3JAtLKqMjslEN
+      name: PASSWORD
+      type: string
+    - name: APP_NAME_ARGO
+      type: string
+    - name: GIT_REPO_CONFIG
+      type: string
+    - name: PROJECT_NAME
+      type: string
+    - name: ENVIRONMENT
+      type: string
+  steps:
+    - args:
+        - '-c'
+        - >
+          argocd login $(params.ARGO_URL) --grpc-web --username
+          $(params.USERNAME) --password $(params.PASSWORD) --insecure && argocd
+          app create $(params.APP_NAME_ARGO) --repo $(params.GIT_REPO_CONFIG)
+          --revision $(params.ENVIRONMENT) --path ./kustomize --dest-namespace
+          $(params.PROJECT_NAME) --dest-server https://kubernetes.default.svc
+          --upsert --sync-policy automated --self-heal --auto-prune
+      command:
+        - sh
+      image: 'argoproj/argocd:v2.6.11'
+      name: create-app
+      resources: {}
+  workspaces:
+    - name: workspace
