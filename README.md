@@ -43,4 +43,4 @@ Aplicaçao em execução no ArgoCD.
 |![App Running in ArgoCD](img/app-argo-running.jpg)|
 |-|
 
-Pronto é só executar e testar, agora você pode automatizar suas aplicações do ArgoCD a partir de seu pipeline do Tekton.
+Pronto é só executar e testar, agora você pode automatizar a criação de suas aplicações no ArgoCD a partir de seu pipeline do Tekton.
